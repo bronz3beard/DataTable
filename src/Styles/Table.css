@@ -1,0 +1,106 @@
+body {
+    font-family: Helvetica, sans-serif !important;
+}
+
+.SearchContainer {
+    top: 0%;
+    width: 100%;
+    height: 100%;
+}
+
+#dataTable {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+#tableHeaders {
+    display: table-cell;
+    cursor: pointer;
+}
+    #dataTable td {
+        border-bottom: 1px solid grey;
+        padding: 8px;
+    }
+
+    #dataTable th {
+        cursor: pointer;
+    }
+
+    #dataTable tr:nth-child(1n+2) {
+        background-color: #dbd9d9;
+    }
+    #treeRow {
+        background-color: darkred;
+    }
+
+    #dataTable tr:hover {
+        background-color: #a09d9d;
+    }
+
+    #dataTable th {
+        padding-top: 12px;
+        padding-bottom: 12px;
+        padding-left: 0px;
+        text-align: left;
+        color: black;
+    }
+.expand {
+    cursor: pointer;
+}
+#Icon { /*added for padding between icon and record type*/
+    float: left;
+    padding: 5px;
+}
+.filterForm input[type=text] {
+    width: 50%;
+    margin-top: 3%;
+    margin-bottom: 1%;
+    box-sizing: border-box;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    background-color: white;
+    background-repeat: no-repeat;
+    padding: 4px 8px;
+    -webkit-transition: width 0.4s ease-in-out;
+    transition: width 0.4s ease-in-out;
+}
+
+    .filterForm input[type=text]:focus {
+        width: 60.2%;
+    }
+
+.suggestion {
+    cursor: pointer;
+    border-bottom: 2px solid black;
+    border-width: thin;
+    font-size: 12px;
+}
+
+.SearchForm {
+    margin-top: 3%;
+    margin-left: 5%;
+    width: 70%;
+}
+#search-submit {
+    margin-right: 1%;
+}
+#checkBox {
+        margin-left: 6%;
+        margin-top: 1%;
+}
+#table-filter {
+    margin-left: 5.6%;
+    padding: 0%;
+}
+
+#page-numbers {
+    padding-top: 3%;
+}
+#checkbox {
+    margin-left: 1%;
+}
+@media only screen and (max-width: 760px), (min-device-width: 768px) and (max-device-width: 1024px) {
+    div {
+    }
+}
