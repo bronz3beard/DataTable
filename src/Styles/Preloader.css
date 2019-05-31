@@ -37,7 +37,7 @@ body {
         bottom: 5px;
         border-radius: 50%;
         border: 3px solid transparent;
-        border-top-color: #ee7722;
+        border-top-color: purple;
         -webkit-animation: spin 3s linear infinite;
         animation: spin 3s linear infinite;
     }
@@ -51,7 +51,7 @@ body {
         bottom: 15px;
         border-radius: 50%;
         border: 3px solid transparent;
-        border-top-color: #ffddcc;
+        border-top-color: grey;
         -webkit-animation: spin 1.5s linear infinite;
         animation: spin 1.5s linear infinite;
     }

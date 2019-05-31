@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
+
 import "./Styles/Table.css";
 import "./Styles/Preloader.css";
 import "./Styles/MobileTable.css";

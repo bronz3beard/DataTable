@@ -1,41 +1,44 @@
 import React, { PureComponent } from "react";
 
+//Components
+import Preloader from "./pre-loader";
 import TableHeaders from "./table-headers";
 import TableRows from "./table-rows";
+import Pagination from "./pagination";
 
-class RecordTable extends PureComponent { //Child of SearchContainer
+class RecordTable extends PureComponent {
     state = {
         columns: [
             {
-                "name": "",
-                "username": "",
-                "rating": 3,
-                "favorites": 12,
-                "visits": 72,
-                "difficulty": 1,
-                "terrain": 1,
-                "size": "big",
-                "created": "March 14, 2019",
-                "updated": "April 29, 2019",
-                "coords": "5.1911 159.6754"
-            }
+                Header: "Id",
+                Value: "id",
+                sortOn: "id",
+            }, {
+                Header: "Content",
+                Value: "body",
+                sortOn: "body",
+            }, {
+                Header: "Email",
+                Value: "email",
+                sortOn: "email",
+            }, {
+                Header: "Name",
+                Value: "name",
+                sortOn: "name",
+            },
         ],
-        //data and locationData length both set to 300 records total server side
         data: [],
 
-        toggled: false,
         isLoading: true,
 
         sortOrder: {
             key: "asc",
         },
-
         currentPage: 1,
         recordsPerPage: 30,
 
         query: "",
         suggestionPlaceHolder: "Table filter",
-        isHidden: true,
     };
     componentDidMount() {
         this.loadRecordsFromServer();
@@ -43,14 +46,14 @@ class RecordTable extends PureComponent { //Child of SearchContainer
     // Initial call to the server for records 
     loadRecordsFromServer() {
         const xmlhr = new XMLHttpRequest();
-        const url = "https://randomuser.me/api/";
+        const url = "https://jsonplaceholder.typicode.com/comments";
         xmlhr.open("GET", url, true);
         xmlhr.onload = () => {
             if (xmlhr.readyState === xmlhr.DONE) {
                 if (xmlhr.status === 200) {
                     const data = JSON.parse(xmlhr.responseText);
                     this.setState({
-                        data: data.results,
+                        data: data,
                         isLoading: false,
                     });
                 }
@@ -59,19 +62,6 @@ class RecordTable extends PureComponent { //Child of SearchContainer
         xmlhr.send();
     }
 
-    toggleHidden(index) {
-        var updateVal = this.state.data;
-        updateVal.Collapse = !updateVal.Collapse;
-
-        this.setState({
-            ...this.state.data,
-            updateVal,
-        });
-
-        this.loadTreeItemsFromServer(index);
-    }
-
-
     // Column Sort handler + Logic
     columnSort = (key) => {
         const { data, sortOrder } = this.state;
@@ -79,7 +69,7 @@ class RecordTable extends PureComponent { //Child of SearchContainer
         const tableData = data
 
         let newData;
-        if (key === "Uri") {
+        if (key === "id") {
             newData = tableData.sort((a, b) => (sortOrder[key] === "asc" ?
                 a[key] - b[key] :
                 b[key] - a[key])
@@ -90,15 +80,14 @@ class RecordTable extends PureComponent { //Child of SearchContainer
                 b[key].localeCompare(a[key]))
             );
         }
-            this.setState({
-                data: newData,
-                sortOrder: {
-                    [key]: sortOrder[key] === "asc" ? "desc" : "asc"
-                },
-                isLoading: false,
-                ...this.state.data,
-            });
-      
+        this.setState({
+            data: newData,
+            sortOrder: {
+                [key]: sortOrder[key] === "asc" ? "desc" : "asc"
+            },
+            isLoading: false,
+            ...data,
+        });
     }
     //on page table filter handler
     tableSearchFilter = (event) => {
@@ -106,44 +95,57 @@ class RecordTable extends PureComponent { //Child of SearchContainer
         this.setState({
             query: query,
         });
-        console.log("TCL: RecordTable -> tableSearchFilter -> query", query)
-
     }
-    // Column Sort handler + Logic
-    columnSort = (key) => {
-        const { data, locationData, checked, sortOrder } = this.state;
-        //console.log(checked, " ", key, " ", sortOrder[key]);
-
-        const tableData = !checked ? data : locationData;
-        var updateVal = tableData;
-        updateVal.Collapse = !updateVal.Collapse;
-
-        let newData;
-        if (key === "Uri") {
-            newData = tableData.sort((a, b) => (sortOrder[key] === "asc" ?
-                a[key] - b[key] :
-                b[key] - a[key])
-            );
-        } else {
-            newData = tableData.sort((a, b) => (sortOrder[key] === "asc" ?
-                a[key].localeCompare(b[key]) :
-                b[key].localeCompare(a[key]))
-            );
-        }
+    //Pagination 
+    handlePageChange = (event) => {
+        const currentPage = Number(event.target.id);
+        this.setState({
+            currentPage: currentPage,
+        });
+    }
+    // Logic for pagination next page (pages go forward 1 at a time)
+    increment = () => {
+        const { currentPage } = this.state;
+        this.setState({
+            currentPage: currentPage + 1,
+        });
+    }
+    // Logic for pagination previous page (pages go back 1 at a time)
+    decrement = () => {
+        const { currentPage } = this.state;
+        this.setState({
+            currentPage: currentPage - 1,
+        });
+    }
+    // Logic for pagination first page
+    first = () => {
+        this.setState({
+            currentPage: 1,
+        });
+    }
+    // Logic for pagination last page
+    last = () => {
+        const { recordsPerPage, data } = this.state;
+        this.setState({
+            currentPage: Math.ceil(data.length / recordsPerPage),
+        });
     }
     render() {
-        const { data, columns, query,
-            childData, toggled, suggestionPlaceHolder,
-            currentPage, recordsPerPage,
-            isHidden, isLoading } = this.state;
-
+        const { data, columns, query, suggestionPlaceHolder, currentPage, recordsPerPage, isLoading } = this.state;
 
         const indexOfLastRecord = currentPage * recordsPerPage;
         const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
 
-        //record and location data filtered by query for the on page table filter
-        const tableData = data.slice(indexOfFirstRecord, indexOfLastRecord); //filter(searchFilter(query)).
-        console.log("TCL: RecordTable -> render -> data", data)
+        //record data filtered by query for the on page table filter
+        const lowercasedFilter = query.toLowerCase();
+        const tableData = data.filter((item) => {
+            return (
+                item.id.toString().indexOf(lowercasedFilter) !== -1 ||
+                item.email.toLowerCase().indexOf(lowercasedFilter) !== -1 ||
+                item.name.toLowerCase().indexOf(lowercasedFilter) !== -1 ||
+                !lowercasedFilter
+            );
+        }).slice(indexOfFirstRecord, indexOfLastRecord);
 
         //on page table data filter
         const recordFilter =
@@ -157,71 +159,39 @@ class RecordTable extends PureComponent { //Child of SearchContainer
                     onChange={this.tableSearchFilter}
                 />
             </form>
+
         return (
-            <div>
-                {recordFilter}
-                <table id="dataTable">
-                    <TableHeaders columns={columns} columnSort={this.columnSort} />
-                    {
-                        !tableData ? <tbody /> : tableData.map((record) => {
-                            return (
-                                <TableRows
-                                    key={record}
-                                    columns={columns}
-                                    data={record}
-                                 />
-                            );
-                        })
-                    }
-                </table>
-            </div>
+            isLoading ? <Preloader /> :
+                <div>
+                    {recordFilter}
+                    <table id="dataTable">
+                        <TableHeaders columns={columns} columnSort={this.columnSort} />
+                        {
+                            tableData.map((record, key) => {
+                                return (
+                                    <TableRows
+                                        key={key}
+                                        columns={columns}
+                                        data={record}
+                                    />
+                                );
+                            })
+                        }
+                    </table>
+                    <Pagination
+                        data={data}
+                        recordsPerPage={recordsPerPage}
+                        currentPage={currentPage}
+                        handlePageChange={this.handlePageChange}
+                        decrement={this.decrement}
+                        first={this.first}
+                        last={this.last}
+                        increment={this.increment}
+                    />
+                </div>
         )
     }
 }
 
 
 export default RecordTable;
-
-
-function searchFilter(searchQuery) {
-    /*return (x) => {
-        if (x.Title === undefined) {
-            return (
-                x.Uri.includes(searchQuery) ||
-                x.Number.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                x.DateCreated.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                x.TrimType.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                !searchQuery
-            );
-        } else {
-            return (
-                x.Title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                x.Uri.includes(searchQuery) ||
-                x.Number.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                x.DateCreated.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                x.TrimType.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                !searchQuery
-            );
-        }
-    };*/
-}
-function locationSearchFilter(searchQuery) {
-    return (x) => {
-        if (x.EmailAddress || x.Honorific === null) {
-            return (
-                x.FormattedName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                x.Uri.includes(searchQuery) ||
-                x.TypeOfLocation.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                !searchQuery);
-        } else {
-            return (
-                x.FormattedName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                x.Uri.includes(searchQuery) ||
-                x.TypeOfLocation.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                x.EmailAddress.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                x.Honorific.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                !searchQuery
-            );
-        }
-    };
-}

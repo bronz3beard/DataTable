@@ -1,6 +1,6 @@
 import React, { PureComponent } from "react";
 
-class TableHeaders extends PureComponent { //child of RecordTable
+class TableHeaders extends PureComponent {
     state = {
         width: window.innerWidth,
     };
@@ -14,18 +14,17 @@ class TableHeaders extends PureComponent { //child of RecordTable
         //console.log(window.innerWidth);
     }
     render() {
-        const { columns, columnSort, checked } = this.props;
+        const { columns, columnSort } = this.props;
 
         if (this.state.width > 760) {
             return (
                 <tbody>
                     <tr>
-                        <col />
                         {
-                            columns.map((column) => {
+                            columns.map((column, key) => {
                                 return (
-                                    <th id="tableHeaders" key={column.columnId} onClick={() => columnSort(!checked ? column.sortOn : column.locationSortOn)}>
-                                        {!checked ? column.Header : column.locationHeader}
+                                    <th id="tableHeaders" key={key} onClick={() => columnSort(column.sortOn)}>
+                                        {column.Header}
                                     </th>
                                 );
                             })
