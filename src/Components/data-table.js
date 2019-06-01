@@ -38,7 +38,7 @@ class RecordTable extends PureComponent {
         recordsPerPage: 30,
 
         query: "",
-        suggestionPlaceHolder: "Table filter",
+        PlaceHolder: "Table filter",
     };
     componentDidMount() {
         this.loadRecordsFromServer();
@@ -65,7 +65,6 @@ class RecordTable extends PureComponent {
     // Column Sort handler + Logic
     columnSort = (key) => {
         const { data, sortOrder } = this.state;
-
         const tableData = data
 
         let newData;
@@ -131,20 +130,21 @@ class RecordTable extends PureComponent {
         });
     }
     render() {
-        const { data, columns, query, suggestionPlaceHolder, currentPage, recordsPerPage, isLoading } = this.state;
+        const { data, columns, query, PlaceHolder, 
+            currentPage, recordsPerPage, isLoading 
+        } = this.state;
 
         const indexOfLastRecord = currentPage * recordsPerPage;
         const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
 
-        //record data filtered by query for the on page table filter
+        //table data filtered by query for the on page table filter
         const lowercasedFilter = query.toLowerCase();
         const tableData = data.filter((item) => {
-            return (
-                item.id.toString().indexOf(lowercasedFilter) !== -1 ||
-                item.email.toLowerCase().indexOf(lowercasedFilter) !== -1 ||
-                item.name.toLowerCase().indexOf(lowercasedFilter) !== -1 ||
+            return ( 
+                Object.keys(item).some(key =>
+                item[key].toString().toLowerCase().indexOf(lowercasedFilter) !== -1 ||
                 !lowercasedFilter
-            );
+            ));
         }).slice(indexOfFirstRecord, indexOfLastRecord);
 
         //on page table data filter
@@ -155,7 +155,7 @@ class RecordTable extends PureComponent {
                     id="table-filter"
                     type="text"
                     value={query}
-                    placeholder={suggestionPlaceHolder}
+                    placeholder={PlaceHolder}
                     onChange={this.tableSearchFilter}
                 />
             </form>
@@ -183,15 +183,14 @@ class RecordTable extends PureComponent {
                         recordsPerPage={recordsPerPage}
                         currentPage={currentPage}
                         handlePageChange={this.handlePageChange}
-                        decrement={this.decrement}
-                        first={this.first}
-                        last={this.last}
-                        increment={this.increment}
+                        handleDecrement={this.decrement}
+                        handleFirst={this.first}
+                        handleFast={this.last}
+                        handleIncrement={this.increment}
                     />
                 </div>
         )
     }
 }
-
 
 export default RecordTable;

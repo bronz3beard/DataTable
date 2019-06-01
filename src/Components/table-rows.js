@@ -1,10 +1,6 @@
 import React, { PureComponent } from "react";
 
 class TableRows extends PureComponent {
-    state = {
-        isLoading: false,
-    };
-
     render() {
 
         const { columns, data } = this.props;
