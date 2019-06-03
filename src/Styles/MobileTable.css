@@ -1,29 +1,21 @@
-/*
-	Max width before this PARTICULAR table gets nasty. This query will take effect for any screen smaller than 760px and also iPads specifically.
-	*/
-    @media only screen and (max-width: 760px), (min-device-width: 768px) and (max-device-width: 1024px) {
+/*Max width before this PARTICULAR table gets nasty. This query will take effect for any screen smaller than 760px and also iPads specifically.*/
+@media only screen and (max-width: 760px), (min-device-width: 768px) and (max-device-width: 1024px) {
+    /* Force table to not be like tables anymore */
+    table, thead, tbody, th, td, tr {
+        display: block;
+    }
+    /* Hide table headers (but not display: none;, for accessibility) */
+    thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    } tr {
+        margin: 0 0 1rem 0;
+    } tr:nth-child(1n+2) {
+        background: #ccc;
+    }
 
-        /* Force table to not be like tables anymore */
-        table, thead, tbody, th, td, tr {
-            display: block;
-        }
-    
-            /* Hide table headers (but not display: none;, for accessibility) */
-            thead tr {
-                position: absolute;
-                top: -9999px;
-                left: -9999px;
-            }
-    
-        tr {
-            margin: 0 0 1rem 0;
-        }
-    
-            tr:nth-child(1n+2) {
-                background: #ccc;
-            }
-    
-        td {
+    td {
             /* Behave  like a "row" */
             border: none;
             border-bottom: 1px solid #eee;
@@ -41,24 +33,16 @@
                 padding-right: 10px;
                 white-space: nowrap;
             }
-    
-            /*
-                You need to keep HTML and CSS in sync.
-            */
+            /*You need to keep HTML and CSS in sync.*/
             td:nth-of-type(1):before {
                 content: "Id:";
-            }
-    
-            td:nth-of-type(2):before {
+            } td:nth-of-type(2):before {
                 content: "Content:";
-            }
-    
-            td:nth-of-type(3):before {
+            } td:nth-of-type(3):before {
                 content: "Email:";
-            }
-    
-            td:nth-of-type(4):before {
+            } td:nth-of-type(4):before {
                 content: "Name:";
             }
         }
+            
     

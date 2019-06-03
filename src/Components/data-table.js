@@ -30,6 +30,7 @@ class RecordTable extends PureComponent {
         data: [],
 
         isLoading: true,
+        error: false,
 
         sortOrder: {
             key: "asc",
@@ -55,6 +56,10 @@ class RecordTable extends PureComponent {
                     this.setState({
                         data: data,
                         isLoading: false,
+                    });
+                } else {
+                    this.setState({
+                        error: true,
                     });
                 }
             }
@@ -103,35 +108,35 @@ class RecordTable extends PureComponent {
         });
     }
     // Logic for pagination next page (pages go forward 1 at a time)
-    increment = () => {
+    handleIncrement = () => {
         const { currentPage } = this.state;
         this.setState({
             currentPage: currentPage + 1,
         });
     }
     // Logic for pagination previous page (pages go back 1 at a time)
-    decrement = () => {
+    handleDecrement = () => {
         const { currentPage } = this.state;
         this.setState({
             currentPage: currentPage - 1,
         });
     }
     // Logic for pagination first page
-    first = () => {
+    handleFirst = () => {
         this.setState({
             currentPage: 1,
         });
     }
     // Logic for pagination last page
-    last = () => {
+    handleLast = () => {
         const { recordsPerPage, data } = this.state;
         this.setState({
             currentPage: Math.ceil(data.length / recordsPerPage),
         });
     }
     render() {
-        const { data, columns, query, PlaceHolder, 
-            currentPage, recordsPerPage, isLoading 
+        const { data, error, columns, query, PlaceHolder,
+            currentPage, recordsPerPage, isLoading
         } = this.state;
 
         const indexOfLastRecord = currentPage * recordsPerPage;
@@ -140,11 +145,11 @@ class RecordTable extends PureComponent {
         //table data filtered by query for the on page table filter
         const lowercasedFilter = query.toLowerCase();
         const tableData = data.filter((item) => {
-            return ( 
+            return (
                 Object.keys(item).some(key =>
-                item[key].toString().toLowerCase().indexOf(lowercasedFilter) !== -1 ||
-                !lowercasedFilter
-            ));
+                    item[key].toString().toLowerCase().indexOf(lowercasedFilter) !== -1 ||
+                    !lowercasedFilter
+                ));
         }).slice(indexOfFirstRecord, indexOfLastRecord);
 
         //on page table data filter
@@ -160,8 +165,21 @@ class RecordTable extends PureComponent {
                 />
             </form>
 
+        if (isLoading) {
+            return (
+                <Preloader />
+            );
+        }
+        if (error) {
+            return (
+                <div className="error">
+                    <span>
+                        table data has not been fetched.
+                    </span>
+                </div>
+            );
+        }
         return (
-            isLoading ? <Preloader /> :
                 <div>
                     {recordFilter}
                     <table id="dataTable">
@@ -183,10 +201,10 @@ class RecordTable extends PureComponent {
                         recordsPerPage={recordsPerPage}
                         currentPage={currentPage}
                         handlePageChange={this.handlePageChange}
-                        handleDecrement={this.decrement}
-                        handleFirst={this.first}
-                        handleFast={this.last}
-                        handleIncrement={this.increment}
+                        handleDecrement={this.handleDecrement}
+                        handleFirst={this.handleFirst}
+                        handleLast={this.handleLast}
+                        handleIncrement={this.handleIncrement}
                     />
                 </div>
         )

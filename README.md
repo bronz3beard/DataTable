@@ -1,4 +1,24 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## DataTable
+
+### This document serves as a consolidation of some of the items that could be helpful to understand this project.
+
+This project was bootstrapped with [create-react-app](https://github.com/facebook/create-react-app).
+
+- __For__ Anyone needing to arrange some json data in a table,
+- __who__ needs to a dynamic way to sort data in a table with pagination,
+- __the__ DataTable,
+- __is a__ sortable searchable table that can dynamically load data on mobile device of PC.
+
+
+# Installation:
+
+# Demo:
+* a short demo for the current version of the [DataTable 0.1.0](https://codepen.io/roryfn/pen/jJqYEq?editors=0010).
+
+# Collaborators:
+- @personA
+- @personB
+
 
 ## Available Scripts
 

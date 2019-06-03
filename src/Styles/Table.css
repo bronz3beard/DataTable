@@ -2,6 +2,15 @@ body {
     font-family: Helvetica, sans-serif !important;
 }
 
+.error {
+    position: fixed;
+    top: 5%;
+    text-align: center;
+    height: auto;
+    width: 100%;
+    color: black;
+}
+
 .SearchContainer {
     top: 0%;
     width: 100%;

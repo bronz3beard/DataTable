@@ -3,7 +3,7 @@ import React, { PureComponent } from "react";
 class Pagination extends PureComponent {
     render() {
         const { data, currentPage, recordsPerPage, handlePageChange,
-            decrement, first, last, increment
+            handleDecrement, handleFirst, handleLast, handleIncrement
         } = this.props;
 
         // pagination, mapping and logic.
@@ -36,11 +36,11 @@ class Pagination extends PureComponent {
 
         const previousPage = currentPage === startPage ?
             null :
-            <li key="Previous" onClick={decrement}>Previous</li>;
+            <li key="Previous" onClick={handleDecrement}>Previous</li>;
 
         const firstPage = currentPage === startPage ?
             null :
-            <li key="first" onClick={first}>&lang;&lang;</li>;
+            <li key="first" onClick={handleFirst}>&lang;&lang;</li>;
 
         const lastSepPage = currentPage !== endPage ?
             <li className="disabled">...</li> :
@@ -48,11 +48,11 @@ class Pagination extends PureComponent {
 
         const nextPage = currentPage === endPage ?
             null :
-            <li key="Next" onClick={increment}>Next</li>;
+            <li key="Next" onClick={handleIncrement}>Next</li>;
 
         const lastPage = currentPage === endPage ?
             null :
-            <li key="last" onClick={last}>&rang;&rang;</li>;
+            <li key="last" onClick={handleLast}>&rang;&rang;</li>;
 
         return (
             <div className="pagination-wrapper">

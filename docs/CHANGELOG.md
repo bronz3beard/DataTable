@@ -13,44 +13,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.0] - 03-06-2019
 ###Changed
-- 
+- naming of functions in pagination logic
+- updated changelog
+- logic for page loader
 
 ### Added
 - Package-lock.json updated
 - added CHANGELOG.md
-
-###Changed
-- 
+- added error catching for when data is not fetched from url
 
 ## [0.1.0] - 01-06-2019
-###Changed
-- 
 
 ### Added
 - Added ability to dynamically filter data
 
-###Changed
-- 
-
 ## [0.1.0] - 31-05-2019
-###Changed
-- 
 
 ### Added
 - initial code base added and some styling
 
-###Changed
-- 
-
 
 ## [0.1.0] - 26-05-2019
-###Changed
-- 
 
 ### Added
 - CSS
 - Major WIP Added base components and css styles
 - test commit.
 
-###Changed
-- 
