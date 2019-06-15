@@ -2,52 +2,113 @@ import React, { PureComponent } from "react";
 
 //Components
 import Preloader from "./pre-loader";
+import ScrollButton from "./scroll-to-top";
 import TableHeaders from "./table-headers";
 import TableRows from "./table-rows";
 import Pagination from "./pagination";
 
 class RecordTable extends PureComponent {
     state = {
+        error: false,
+        isLoading: false,
         columns: [
             {
+                Header: "",
+                commentHeader: "",
+                Value: "",
+                commentValue: "",
+                sortOn: "",
+                childItem: null,
+            }, {
                 Header: "Id",
+                commentHeader: "Id",
                 Value: "id",
+                commentValue: "id",
                 sortOn: "id",
-            }, {
-                Header: "Content",
-                Value: "body",
-                sortOn: "body",
-            }, {
-                Header: "Email",
-                Value: "email",
-                sortOn: "email",
+                childItem: null,
             }, {
                 Header: "Name",
+                commentHeader: "Name",
                 Value: "name",
+                commentValue: "name",
                 sortOn: "name",
-            },
+                childItem: null,
+            }, {
+                Header: "username",
+                commentHeader: "",
+                Value: "username",
+                commentValue: "",
+                sortOn: "username",
+                childItem: null,
+            }, {
+                Header: "Email",
+                commentHeader: "Email",
+                Value: "email",
+                commentValue: "email",
+                sortOn: "email",
+                childItem: null,
+            }, {
+                Header: "Phone",
+                commentHeader: "",
+                Value: "phone",
+                commentValue: "",
+                sortOn: "phone",
+                childItem: null,
+            }, {
+                Header: "Website",
+                commentHeader: "",
+                Value: "website",
+                commentValue: "",
+                sortOn: "website",
+                childItem: null,
+            }, {
+                Header: "Address",
+                commentHeader: "",
+                Value: "address.city",
+                commentValue: "",
+                sortOn: "adress.city",
+                childItem: [
+                    {             
+                        Value: "address.zipcode",
+                    }, {    
+                        Value: "address.street",
+                    }
+                ],
+            }, {
+                Header: "",
+                commentHeader: "Comment",
+                Value: "",
+                commentValue: "body",
+                sortOn: "body",
+                childItem: null,
+            }, 
         ],
         data: [],
-
-        isLoading: true,
-        error: false,
+        checked: false,
 
         sortOrder: {
             key: "asc",
         },
         currentPage: 1,
-        recordsPerPage: 30,
+        recordsPerPage: 15,
 
         query: "",
         PlaceHolder: "Table filter",
     };
-    componentDidMount() {
-        this.loadRecordsFromServer();
+
+    componentWillMount() {
+        this.loadDataFromServer();
     }
     // Initial call to the server for records 
-    loadRecordsFromServer() {
+    loadDataFromServer = () => {
+        const { checked } = this.state;
+  
         const xmlhr = new XMLHttpRequest();
-        const url = "https://jsonplaceholder.typicode.com/comments";
+        const url = !checked ? `https://jsonplaceholder.typicode.com/comments` :
+        `https://jsonplaceholder.typicode.com/users`  
+        ;
+        this.setState({ isLoading: true });
+
         xmlhr.open("GET", url, true);
         xmlhr.onload = () => {
             if (xmlhr.readyState === xmlhr.DONE) {
@@ -60,13 +121,13 @@ class RecordTable extends PureComponent {
                 } else {
                     this.setState({
                         error: true,
+                        isLoading: false,
                     });
                 }
             }
         };
         xmlhr.send();
     }
-
     // Column Sort handler + Logic
     columnSort = (key) => {
         const { data, sortOrder } = this.state;
@@ -134,9 +195,18 @@ class RecordTable extends PureComponent {
             currentPage: Math.ceil(data.length / recordsPerPage),
         });
     }
+    handleCheckBox = () => {
+        const { checked } = this.state;
+        this.setState({
+            recordsPerPage: 30,
+            checked: !checked,
+            query: "",
+        });
+        this.loadDataFromServer();
+    }
     render() {
-        const { data, error, columns, query, PlaceHolder,
-            currentPage, recordsPerPage, isLoading
+        const { error, hasMore, isLoading, data, columns, query, PlaceHolder,
+            currentPage, recordsPerPage, checked
         } = this.state;
 
         const indexOfLastRecord = currentPage * recordsPerPage;
@@ -163,13 +233,15 @@ class RecordTable extends PureComponent {
                     placeholder={PlaceHolder}
                     onChange={this.tableSearchFilter}
                 />
+                <div id="checkbox">
+                    <input
+                        type="checkbox"
+                        id="checkBox"
+                        onClick={this.handleCheckBox}
+                        defaultChecked="true" /> <strong>Change Data</strong>
+                </div>
             </form>
 
-        if (isLoading) {
-            return (
-                <Preloader />
-            );
-        }
         if (error) {
             return (
                 <div className="error">
@@ -179,23 +251,25 @@ class RecordTable extends PureComponent {
                 </div>
             );
         }
+        
         return (
-                <div>
-                    {recordFilter}
-                    <table id="dataTable">
-                        <TableHeaders columns={columns} columnSort={this.columnSort} />
-                        {
-                            tableData.map((record, key) => {
-                                return (
-                                    <TableRows
-                                        key={key}
-                                        columns={columns}
-                                        data={record}
-                                    />
-                                );
-                            })
-                        }
-                    </table>
+            <div>
+                {recordFilter}
+                <table id="dataTable">
+                    <TableHeaders columns={columns} checked={checked} columnSort={this.columnSort} />
+                    {
+                        tableData.map((record, key) => {
+                            return (
+                                <TableRows
+                                    key={key}
+                                    columns={columns}
+                                    data={record}
+                                    checked={checked}
+                                />
+                            );
+                        })
+                    }
+                </table>
                     <Pagination
                         data={data}
                         recordsPerPage={recordsPerPage}
@@ -206,7 +280,9 @@ class RecordTable extends PureComponent {
                         handleLast={this.handleLast}
                         handleIncrement={this.handleIncrement}
                     />
-                </div>
+                {isLoading && <Preloader />}
+                {!hasMore && <ScrollButton />}
+            </div>
         )
     }
 }

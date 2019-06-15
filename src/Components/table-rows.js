@@ -1,32 +1,65 @@
 import React, { PureComponent } from "react";
 
-class TableRows extends PureComponent {
-    render() {
+//Components
+import ExpandableItem from "./expandable-item";
 
-        const { columns, data } = this.props;
+class TableRows extends PureComponent {
+    state = {
+        expand: false,
+    };
+    getDescendantProp = (obj, desc) => {
+        var arr = desc.split('.');
+        while (arr.length && (obj = obj[arr.shift()]));
+        return obj;
+    }
+    toggleHidden = (index) => {
+        const { expand } = this.state;
+        if(index) {
+            this.setState({
+                expand: !expand,
+            });
+        }
+    }
+    render() {
+        const { expand } = this.state;
+        const { columns, data, checked } = this.props;
+        console.log("TCL: TableRows -> render -> data", data)
+
+        let expandVal;
+        if (!expand) {
+            expandVal = " + ";
+        } else if (expand) {
+            expandVal = " - ";
+        } else {
+            expandVal = null;
+        }
+
+        const hasItem = columns.map((item, key) => {
+            return (
+                <ExpandableItem key={key} data={data} columns={item.childItem} getDescendantProp={this.getDescendantProp} />
+            );
+        });
 
         return (
             <tbody>
-                <tr className="tableRow">
+                <tr>
+                    <td>
+                        <div className="expand" onClick={() => this.toggleHidden(data.id)}>
+                            {expandVal}
+                        </div>
+                    </td>
                     {
                         columns.map((column, key) => {
                             return (
-                                <td key={key}>
-                                    {getDescendantProp(data, column.Value)}
-                                </td>
+                                <td key={key}>{this.getDescendantProp(data, checked ? column.Value : column.commentValue)}</td>
                             );
                         })
                     }
                 </tr>
+                {expand ? hasItem : null}
             </tbody>
         );
     }
 }
 
 export default TableRows;
-
-function getDescendantProp(obj, desc) {
-    var arr = desc.split('.');
-    while (arr.length && (obj = obj[arr.shift()]));
-    return obj;
-}

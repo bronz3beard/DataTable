@@ -142,8 +142,28 @@ ul.pagination li.active {
 ul.pagination li:hover:not(.active) {
     background-color: #ddd;
 }
-
+footer {
+    width: 100%;
+    margin: 1em 0 0;
+    font-size: 0.75em;
+    line-height: 1;
+    text-transform: uppercase;
+    background: #2c2c2c;
+}
+footer button {
+    display: block;
+    height: 100%;
+    width: 100%;
+    padding: 1.5em;
+    border: none;
+    color: rgb(0, 0, 0);  
+    background: rgb(129, 129, 129);
+    cursor: pointer;
+} footer button:hover {
+    color: blue;
+}
 @media only screen and (max-width: 760px), (min-device-width: 768px) and (max-device-width: 1024px) {
     div {
+        
     }
 }

@@ -14,17 +14,18 @@ class TableHeaders extends PureComponent {
         //console.log(window.innerWidth);
     }
     render() {
-        const { columns, columnSort } = this.props;
+        const { columns, checked, columnSort } = this.props;
 
         if (this.state.width > 760) {
             return (
                 <tbody>
                     <tr>
+                        <col />
                         {
                             columns.map((column, key) => {
                                 return (
                                     <th id="tableHeaders" key={key} onClick={() => columnSort(column.sortOn)}>
-                                        {column.Header}
+                                        {checked ? column.Header : column.commentHeader}
                                     </th>
                                 );
                             })
