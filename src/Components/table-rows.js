@@ -23,7 +23,6 @@ class TableRows extends PureComponent {
     render() {
         const { expand } = this.state;
         const { columns, data, checked } = this.props;
-        console.log("TCL: TableRows -> render -> data", data)
 
         let expandVal;
         if (!expand) {

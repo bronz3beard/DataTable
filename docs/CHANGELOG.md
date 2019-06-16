@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - __Fixed__ for any bug fixes.
 - __Security__ in case of vulnerabilities.
 
+## [0.1.1] - 16-06-2019
+###Changed
+- pagination now only one functioin to handle page changes, still needs refining but now has less code.
+
 ## [0.1.0] - 16-06-2019
 ###Removed
 - infinite scroll

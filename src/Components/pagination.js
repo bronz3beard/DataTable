@@ -1,13 +1,13 @@
 import React, { PureComponent } from "react";
 
 class Pagination extends PureComponent {
+    handlePageChange = (event) => {
+        this.props.handlePageChange(event)
+    }
     render() {
-        const { data, currentPage, recordsPerPage, handlePageChange,
-            handleDecrement, handleFirst, handleLast, handleIncrement
-        } = this.props;
+        const { currentPage, recordsPerPage } = this.props;
 
-        // pagination, mapping and logic.
-        const totalRecords = Math.ceil(data.length / recordsPerPage);
+        const totalRecords = Math.ceil(this.props.data.length / recordsPerPage);
         const pageNumbers = [];
         for (let i = 1; i <= totalRecords; i++) {
             pageNumbers.push(i);
@@ -18,7 +18,7 @@ class Pagination extends PureComponent {
                 <li
                     key={number}
                     id={number}
-                    onClick={handlePageChange}
+                    onClick={this.handlePageChange}
                     className={currentPage === number ? 'active' : ''}
                 >
                     {number}
@@ -36,11 +36,11 @@ class Pagination extends PureComponent {
 
         const previousPage = currentPage === startPage ?
             null :
-            <li key="Previous" onClick={handleDecrement}>Previous</li>;
+            <li title="previous" onClick={this.handlePageChange}>Previous</li>;
 
         const firstPage = currentPage === startPage ?
             null :
-            <li key="first" onClick={handleFirst}>&lang;&lang;</li>;
+            <li title="first" onClick={this.handlePageChange}>&lang;&lang;</li>;
 
         const lastSepPage = currentPage !== endPage ?
             <li className="disabled">...</li> :
@@ -48,11 +48,11 @@ class Pagination extends PureComponent {
 
         const nextPage = currentPage === endPage ?
             null :
-            <li key="Next" onClick={handleIncrement}>Next</li>;
+            <li title="next" onClick={this.handlePageChange}>Next</li>;
 
         const lastPage = currentPage === endPage ?
             null :
-            <li key="last" onClick={handleLast}>&rang;&rang;</li>;
+            <li title="last" onClick={this.handlePageChange}>&rang;&rang;</li>;
 
         return (
             <div className="pagination-wrapper">

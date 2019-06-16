@@ -85,18 +85,18 @@ class RecordTable extends PureComponent {
         ],
         data: [],
         checked: false,
+        currentPage: 1,
+        recordsPerPage: 30,
 
         sortOrder: {
             key: "asc",
         },
-        currentPage: 1,
-        recordsPerPage: 15,
 
         query: "",
         PlaceHolder: "Table filter",
     };
 
-    componentWillMount() {
+    componentDidMount() {
         this.loadDataFromServer();
     }
     // Initial call to the server for records 
@@ -104,9 +104,7 @@ class RecordTable extends PureComponent {
         const { checked } = this.state;
   
         const xmlhr = new XMLHttpRequest();
-        const url = !checked ? `https://jsonplaceholder.typicode.com/comments` :
-        `https://jsonplaceholder.typicode.com/users`  
-        ;
+        const url = !checked ? `https://jsonplaceholder.typicode.com/comments` : `https://jsonplaceholder.typicode.com/users`;
         this.setState({ isLoading: true });
 
         xmlhr.open("GET", url, true);
@@ -133,18 +131,11 @@ class RecordTable extends PureComponent {
         const { data, sortOrder } = this.state;
         const tableData = data
 
-        let newData;
-        if (key === "id") {
-            newData = tableData.sort((a, b) => (sortOrder[key] === "asc" ?
-                a[key] - b[key] :
-                b[key] - a[key])
-            );
-        } else {
-            newData = tableData.sort((a, b) => (sortOrder[key] === "asc" ?
-                a[key].localeCompare(b[key]) :
-                b[key].localeCompare(a[key]))
-            );
-        }
+        const newData = tableData.sort((a, b) => (sortOrder[key] === "asc" ?
+            a[key] > b[key] :
+            b[key] > a[key])
+        );
+
         this.setState({
             data: newData,
             sortOrder: {
@@ -161,40 +152,6 @@ class RecordTable extends PureComponent {
             query: query,
         });
     }
-    //Pagination 
-    handlePageChange = (event) => {
-        const currentPage = Number(event.target.id);
-        this.setState({
-            currentPage: currentPage,
-        });
-    }
-    // Logic for pagination next page (pages go forward 1 at a time)
-    handleIncrement = () => {
-        const { currentPage } = this.state;
-        this.setState({
-            currentPage: currentPage + 1,
-        });
-    }
-    // Logic for pagination previous page (pages go back 1 at a time)
-    handleDecrement = () => {
-        const { currentPage } = this.state;
-        this.setState({
-            currentPage: currentPage - 1,
-        });
-    }
-    // Logic for pagination first page
-    handleFirst = () => {
-        this.setState({
-            currentPage: 1,
-        });
-    }
-    // Logic for pagination last page
-    handleLast = () => {
-        const { recordsPerPage, data } = this.state;
-        this.setState({
-            currentPage: Math.ceil(data.length / recordsPerPage),
-        });
-    }
     handleCheckBox = () => {
         const { checked } = this.state;
         this.setState({
@@ -204,8 +161,36 @@ class RecordTable extends PureComponent {
         });
         this.loadDataFromServer();
     }
+    //Pagination 
+    handlePageChange = (event) => {
+        const currentPage = Number(event.target.id);
+        const type = event.target.textContent;
+        console.log("TCL: RecordTable -> handlePageChange -> type", type)
+
+        this.setState({
+            currentPage: currentPage,
+        });
+
+        if (type === "Next") {
+            this.setState({
+                currentPage: this.state.currentPage + 1
+            });
+        } else if (type === "Previous") {
+            this.setState({
+                currentPage: this.state.currentPage - 1
+            });
+        } else if (type === "〉〉") { //Last
+            this.setState({
+                currentPage: Math.ceil(this.state.data.length / this.state.recordsPerPage)
+            });
+        } else if (type === "〈〈") { //First
+            this.setState({
+                currentPage: 1
+            });
+        }
+    }
     render() {
-        const { error, hasMore, isLoading, data, columns, query, PlaceHolder,
+        const { error, isLoading, data, columns, query, PlaceHolder,
             currentPage, recordsPerPage, checked
         } = this.state;
 
@@ -270,18 +255,9 @@ class RecordTable extends PureComponent {
                         })
                     }
                 </table>
-                    <Pagination
-                        data={data}
-                        recordsPerPage={recordsPerPage}
-                        currentPage={currentPage}
-                        handlePageChange={this.handlePageChange}
-                        handleDecrement={this.handleDecrement}
-                        handleFirst={this.handleFirst}
-                        handleLast={this.handleLast}
-                        handleIncrement={this.handleIncrement}
-                    />
+                <Pagination data={data} currentPage={currentPage} recordsPerPage={recordsPerPage} handlePageChange={this.handlePageChange} />
                 {isLoading && <Preloader />}
-                {!hasMore && <ScrollButton />}
+                <ScrollButton />
             </div>
         )
     }
