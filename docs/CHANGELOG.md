@@ -15,6 +15,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ###Changed
 - pagination now only one functioin to handle page changes, still needs refining but now has less code.
 
+###Removed
+- removed change data source
+
 ## [0.1.0] - 16-06-2019
 ###Removed
 - infinite scroll

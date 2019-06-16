@@ -22,18 +22,19 @@ class TableRows extends PureComponent {
     }
     render() {
         const { expand } = this.state;
-        const { columns, data, checked } = this.props;
-
+        const { columns, data } = this.props;
+        
+        console.log("TCL: TableRows -> render -> columns.childItem", columns.childItem !==null)
         let expandVal;
-        if (!expand) {
+        if (columns.childItem !==null && !expand) {
             expandVal = " + ";
-        } else if (expand) {
+        } else if (columns.childItem !==null && expand) {
             expandVal = " - ";
         } else {
             expandVal = null;
         }
 
-        const hasItem = columns.map((item, key) => {
+        const hasItem = columns.childItem !==null && columns.map((item, key) => {
             return (
                 <ExpandableItem key={key} data={data} columns={item.childItem} getDescendantProp={this.getDescendantProp} />
             );
@@ -50,12 +51,12 @@ class TableRows extends PureComponent {
                     {
                         columns.map((column, key) => {
                             return (
-                                <td key={key}>{this.getDescendantProp(data, checked ? column.Value : column.commentValue)}</td>
+                                <td key={key}>{this.getDescendantProp(data, column.Value)}</td>
                             );
                         })
                     }
+                    {expand ? hasItem : null}
                 </tr>
-                {expand ? hasItem : null}
             </tbody>
         );
     }

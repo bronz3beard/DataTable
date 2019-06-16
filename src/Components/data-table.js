@@ -9,82 +9,41 @@ import Pagination from "./pagination";
 
 class RecordTable extends PureComponent {
     state = {
-        error: false,
-        isLoading: false,
         columns: [
             {
                 Header: "",
-                commentHeader: "",
                 Value: "",
-                commentValue: "",
                 sortOn: "",
                 childItem: null,
             }, {
                 Header: "Id",
-                commentHeader: "Id",
                 Value: "id",
-                commentValue: "id",
                 sortOn: "id",
                 childItem: null,
             }, {
                 Header: "Name",
-                commentHeader: "Name",
                 Value: "name",
-                commentValue: "name",
                 sortOn: "name",
                 childItem: null,
             }, {
-                Header: "username",
-                commentHeader: "",
-                Value: "username",
-                commentValue: "",
-                sortOn: "username",
-                childItem: null,
-            }, {
                 Header: "Email",
-                commentHeader: "Email",
                 Value: "email",
-                commentValue: "email",
                 sortOn: "email",
                 childItem: null,
             }, {
-                Header: "Phone",
-                commentHeader: "",
-                Value: "phone",
-                commentValue: "",
-                sortOn: "phone",
-                childItem: null,
-            }, {
-                Header: "Website",
-                commentHeader: "",
-                Value: "website",
-                commentValue: "",
-                sortOn: "website",
-                childItem: null,
-            }, {
-                Header: "Address",
-                commentHeader: "",
-                Value: "address.city",
-                commentValue: "",
-                sortOn: "adress.city",
-                childItem: [
-                    {             
-                        Value: "address.zipcode",
-                    }, {    
-                        Value: "address.street",
-                    }
-                ],
-            }, {
-                Header: "",
-                commentHeader: "Comment",
+                Header: "Comment",
                 Value: "",
-                commentValue: "body",
                 sortOn: "body",
-                childItem: null,
-            }, 
+                childItem:[
+                    {
+                        Value: "body",
+                    },
+                ]
+            },
         ],
+        error: false,
+        isLoading: false,
         data: [],
-        checked: false,
         currentPage: 1,
         recordsPerPage: 30,
 
@@ -101,10 +60,8 @@ class RecordTable extends PureComponent {
     }
     // Initial call to the server for records 
     loadDataFromServer = () => {
-        const { checked } = this.state;
-  
         const xmlhr = new XMLHttpRequest();
-        const url = !checked ? `https://jsonplaceholder.typicode.com/comments` : `https://jsonplaceholder.typicode.com/users`;
+        const url = `https://jsonplaceholder.typicode.com/comments`;
         this.setState({ isLoading: true });
 
         xmlhr.open("GET", url, true);
@@ -124,7 +81,7 @@ class RecordTable extends PureComponent {
                 }
             }
         };
-        xmlhr.send();
+        xmlhr.send();        
     }
     // Column Sort handler + Logic
     columnSort = (key) => {
@@ -135,7 +92,6 @@ class RecordTable extends PureComponent {
             a[key] > b[key] :
             b[key] > a[key])
         );
-
         this.setState({
             data: newData,
             sortOrder: {
@@ -152,20 +108,10 @@ class RecordTable extends PureComponent {
             query: query,
         });
     }
-    handleCheckBox = () => {
-        const { checked } = this.state;
-        this.setState({
-            recordsPerPage: 30,
-            checked: !checked,
-            query: "",
-        });
-        this.loadDataFromServer();
-    }
     //Pagination 
     handlePageChange = (event) => {
         const currentPage = Number(event.target.id);
         const type = event.target.textContent;
-        console.log("TCL: RecordTable -> handlePageChange -> type", type)
 
         this.setState({
             currentPage: currentPage,
@@ -191,7 +137,7 @@ class RecordTable extends PureComponent {
     }
     render() {
         const { error, isLoading, data, columns, query, PlaceHolder,
-            currentPage, recordsPerPage, checked
+            currentPage, recordsPerPage
         } = this.state;
 
         const indexOfLastRecord = currentPage * recordsPerPage;
@@ -218,13 +164,6 @@ class RecordTable extends PureComponent {
                     placeholder={PlaceHolder}
                     onChange={this.tableSearchFilter}
                 />
-                <div id="checkbox">
-                    <input
-                        type="checkbox"
-                        id="checkBox"
-                        onClick={this.handleCheckBox}
-                        defaultChecked="true" /> <strong>Change Data</strong>
-                </div>
             </form>
 
         if (error) {
@@ -236,12 +175,12 @@ class RecordTable extends PureComponent {
                 </div>
             );
         }
-        
+
         return (
             <div>
                 {recordFilter}
                 <table id="dataTable">
-                    <TableHeaders columns={columns} checked={checked} columnSort={this.columnSort} />
+                    <TableHeaders columns={columns} columnSort={this.columnSort} />
                     {
                         tableData.map((record, key) => {
                             return (
@@ -249,7 +188,7 @@ class RecordTable extends PureComponent {
                                     key={key}
                                     columns={columns}
                                     data={record}
-                                    checked={checked}
+                                    id={console.log(columns)}
                                 />
                             );
                         })

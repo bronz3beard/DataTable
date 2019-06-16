@@ -7,6 +7,9 @@ class TableHeaders extends PureComponent {
     componentDidMount() {
         window.addEventListener("resize", this.resizeWindow);
     }
+    componentWillUnmount() {
+        window.removeEventListener("resize", this.resizeWindow);
+    }
     resizeWindow = () => {
         this.setState({
             width: window.innerWidth,
@@ -14,7 +17,7 @@ class TableHeaders extends PureComponent {
         //console.log(window.innerWidth);
     }
     render() {
-        const { columns, checked, columnSort } = this.props;
+        const { columns, columnSort } = this.props;
 
         if (this.state.width > 760) {
             return (
@@ -25,7 +28,7 @@ class TableHeaders extends PureComponent {
                             columns.map((column, key) => {
                                 return (
                                     <th id="tableHeaders" key={key} onClick={() => columnSort(column.sortOn)}>
-                                        {checked ? column.Header : column.commentHeader}
+                                        {column.Header}
                                     </th>
                                 );
                             })

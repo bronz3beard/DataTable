@@ -14,18 +14,18 @@ class ExpandableItem extends PureComponent {
         const { data, columns, getDescendantProp } = this.props;
 
         return(
-            <tr>
+            <td>
                 {
                     columns && columns.map((column, key) => {
                         return (
-                            <td key={key}>
+                            <div key={key}>
                                 {getDescendantProp(data, column.Value)}
-                            </td>
+                            </div>
                         );
                     })
 
                 }
-            </tr>
+            </td>
         );
     }
 }
