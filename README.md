@@ -11,7 +11,7 @@ This project was bootstrapped with [create-react-app](https://github.com/faceboo
 
 
 # Installation:
-
+- clone
 # Demo:
 * a short demo for the current version of the [DataTable 0.1.0](https://codepen.io/roryfn/pen/jJqYEq?editors=0010).
 
